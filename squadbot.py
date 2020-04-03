@@ -7,7 +7,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-project_folder = os.path.expanduser('~/Code/BruiserBoyz')  # adjust as appropriate
+project_folder = os.path.expanduser('..')  # adjust as appropriate
+# project_folder = os.path.expanduser('~/Code/BruiserBoyz')  # adjust as appropriate
 load_dotenv(os.path.join(project_folder, '.env'))
 SECRET_KEY = os.getenv("CLIENT_ID")
 
