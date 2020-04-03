@@ -43,6 +43,5 @@ class Tester(commands.Cog):
         await ctx.send(f'Player {players}.')
 
 
-
 def setup(client):
     client.add_cog(Tester(client))
