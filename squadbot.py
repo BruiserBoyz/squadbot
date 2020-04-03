@@ -22,6 +22,7 @@ SECRET_KEY = os.getenv("CLIENT_ID")
 
 client = commands.Bot(command_prefix=".bb", case_insensitive=True)
 
+
 # displays an online message when bot is online.
 @client.event
 async def on_ready():
@@ -62,7 +63,6 @@ async def reload(ctx, extension):
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
-
 
 # Run it.
 client.run(SECRET_KEY)
