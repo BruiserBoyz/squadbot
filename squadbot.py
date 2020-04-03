@@ -4,6 +4,7 @@ import discord
 # pip install discord.py
 # pip install python-dotenv
 # pip install pillow
+# pip install cogs
 from discord.ext import commands
 from dotenv import load_dotenv
 
