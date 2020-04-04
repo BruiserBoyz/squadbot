@@ -64,8 +64,8 @@ class FightClub(commands.Cog):
         do_fight = fc_fight(fight_club_players)
 
         await ctx.send(do_fight[0])
-        ctx.send(do_fight[1])
-        ctx.send(f'{do_fight[2]} just kicked {do_fight[3]}\'s ass y\'all!!!')
+        await ctx.send(do_fight[1])
+        await ctx.send(f'{do_fight[2]} just kicked {do_fight[3]}\'s ass y\'all!!!')
 
 
 def setup(client):
