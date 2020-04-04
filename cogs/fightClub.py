@@ -1,16 +1,16 @@
 import random
 import discord
 from discord.ext import commands
-
+from .fightclub.fc_fight import fc_fight
 fight_club_players = []
 weapon_selection = [
     "rusty broken knife",
-    "pistol",
+    "ruddy gun",
     "broken bottle",
 ]
 
 
-class FCPlayer():
+class FCPlayer:
     def __init__(self):
         self.member_obj = None
         self.player_name = None
@@ -58,19 +58,14 @@ class FightClub(commands.Cog):
 
     @commands.command(aliases=['f!'])
     async def _fc_fight(self, ctx):
-        p1 = fight_club_players[0]
-        p1_score = random.randint(0, 100)
-        p2 = fight_club_players[1]
-        p2_score = random.randint(0, 100)
-        await ctx.send(f'{p1.member_obj.display_name} has a {p1.weapon}.')
-        await ctx.send(f'{p2.member_obj.display_name} has a {p2.weapon}.')
-        if p1_score > p2_score:
-            winner = p1.member_obj.mention
-            loser = p2.member_obj.mention
-        else:
-            winner = p2.member_obj.mention
-            loser = p1.member_obj.mention
-        await ctx.send(f'{winner} just kicked {loser}\'s ass y\'all!!!')
+        # Set rando weapons
+        for x in fight_club_players:
+            x.set_weapon((weapon_selection[random.randint(0, 2)]))
+        do_fight = fc_fight(fight_club_players)
+
+        await ctx.send(do_fight[0])
+        ctx.send(do_fight[1])
+        ctx.send(f'{do_fight[2]} just kicked {do_fight[3]}\'s ass y\'all!!!')
 
 
 def setup(client):
