@@ -11,16 +11,18 @@ def fc_fight(fight_club_players):
     p2_score = random.randint(0, 100)
 
     # Return some combat messages
-    fcf_return_array[0] = f'{p1.member_obj.display_name} has a {p1.weapon}.'
-    fcf_return_array[1] = f'{p2.member_obj.display_name} has a {p2.weapon}.'
+    fcf_return_array.append(f'{p1.member_obj.display_name} has a {p1.weapon}.')
+    fcf_return_array.append(f'{p2.member_obj.display_name} has a {p2.weapon}.')
 
     # add winners / losers to array
     if p1_score > p2_score:
-        fcf_return_array[2] = p1.member_obj.mention
-        fcf_return_array[3] = p2.member_obj.mention
+        winner = p1.member_obj.mention
+        loser = p2.member_obj.mention
     else:
-        fcf_return_array[3] = p2.member_obj.mention
-        fcf_return_array[2] = p1.member_obj.mention
+        winner = p2.member_obj.mention
+        loser = p1.member_obj.mention
 
+    fcf_return_array.append(winner)
+    fcf_return_array.append(loser)
     # Return the array
     return fcf_return_array
