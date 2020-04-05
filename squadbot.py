@@ -12,7 +12,8 @@ project_folder = os.path.expanduser('..')  # adjust as appropriate
 # project_folder = os.path.expanduser('~/Code/BruiserBoyz')  # adjust as appropriate
 load_dotenv(os.path.join(project_folder, '.env'))
 SECRET_KEY = os.getenv("CLIENT_ID")
-
+ENV_LOAD_SUCCESS = os.getenv("YOLO")
+print(ENV_LOAD_SUCCESS)
 # client = discord.Client()
 # channel_id = 'DEFINE_ME'
 # token = 'DEFINE_ME'
