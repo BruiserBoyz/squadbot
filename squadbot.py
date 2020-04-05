@@ -9,12 +9,10 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 project_folder = os.path.expanduser('..')  # adjust as appropriate
-# project_folder = os.path.expanduser('~/Code/BruiserBoyz')  # adjust as appropriate
 load_dotenv(os.path.join(project_folder, '.env'))
 SECRET_KEY = os.getenv("CLIENT_ID")
 ENV_LOAD_SUCCESS = os.getenv("YOLO")
 print(ENV_LOAD_SUCCESS)
-# client = discord.Client()
 # channel_id = 'DEFINE_ME'
 # token = 'DEFINE_ME'
 #
@@ -27,12 +25,12 @@ client = commands.Bot(command_prefix=".bb", case_insensitive=True)
 # displays an online message when bot is online.
 @client.event
 async def on_ready():
-    # print('I have become self aware...')
-    # print('logged in as')
-    # print(client.user.name)
-    # print(client.user.id)
-    # print('-----')
-    await client.change_presence(activity=discord.Game(name="I am self-aware"))
+    print('I have become self aware...')
+    print('logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('-----')
+    await client.change_presence(activity=discord.Game(name="get better not bitter"))
 
 
 # cog load commands

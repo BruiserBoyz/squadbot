@@ -36,12 +36,6 @@ class FightClub(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    # Tester
-    # @commands.command(aliases=['.pickGun'])
-    # async def _pick_gun(self, ctx):
-    #
-    #     await ctx.send(f'you say: {question}\nI say: {random.choice(weapon_selection)}')
-
     # Add player to array
     @commands.command(aliases=['fcap'])
     async def _fc_add_player(self, ctx, *, user: discord.Member):

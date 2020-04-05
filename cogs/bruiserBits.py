@@ -21,12 +21,14 @@ class BruiserBits(commands.Cog):
 
     @commands.command(aliases=['qbal'])
     async def _qbal(self, ctx):
+        """Displays quick balance - qbal"""
         for x in this_bank.get_all_accounts():
             print(x.get_balance())
         await ctx.send(x.get_balance())
 
     @commands.command(aliases=['qdep'])
     async def _qdep(self, ctx):
+        """Very quick deposit to single account - qdep"""
         counter = 0
         for x in this_bank.get_all_accounts():
             # print(x.get_balance)
@@ -35,6 +37,7 @@ class BruiserBits(commands.Cog):
 
     @commands.command(aliases=['tfr'])
     async def _tfr(self, ctx, *, account_from, account_to, amount):
+        """Transfer from a single account to another single account - tfr"""
         this_bank.transfer(account_from, account_to, amount)
 
 
