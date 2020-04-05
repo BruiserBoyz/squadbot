@@ -2,6 +2,8 @@ import random
 import discord
 from discord.ext import commands
 from .fightclub.fc_fight import fc_fight
+from .fightclub.display_info import display_info
+
 fight_club_players = []
 weapon_selection = [
     "rusty broken knife",
@@ -63,9 +65,11 @@ class FightClub(commands.Cog):
             x.set_weapon((weapon_selection[random.randint(0, 2)]))
         do_fight = fc_fight(fight_club_players)
 
+        display_info(do_fight)
+
         await ctx.send(do_fight[0])
         await ctx.send(do_fight[1])
-        await ctx.send(f'{do_fight[2]} just kicked {do_fight[3]}\'s ass y\'all!!!')
+        await ctx.send(file=discord.File('./cogs/assets/img/fight!.png'))
 
 
 def setup(client):
