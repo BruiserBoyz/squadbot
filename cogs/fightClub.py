@@ -71,10 +71,8 @@ class FightClub(commands.Cog):
         display_info(do_fight)
 
         await ctx.send(do_fight[0])
-        await ctx.send(file=discord.File('./cogs/assets/img/avatar1.png'))
         await ctx.send(do_fight[1])
-        await ctx.send(file=discord.File('./cogs/assets/img/avatar2.png'))
-        await ctx.send(file=discord.File('./cogs/assets/img/fight!.png'))
+        await ctx.send(file=discord.File('./cogs/assets/img/fight!.jpg'))
 
 
 def setup(client):
