@@ -2,7 +2,7 @@ import random
 import discord
 from discord.ext import commands
 from .fightclub.fc_fight import fc_fight
-from .fightclub.display_VS import display_VS
+from .fightclub.display_fight import display_VS, fight_winner
 
 fight_club_players = []
 weapon_selection = [
@@ -64,13 +64,9 @@ class FightClub(commands.Cog):
 
         display_VS(do_fight)
 
-        await ctx.send(file=discord.File('./cogs/assets/img/fight!.jpg'))
+        await ctx.send(file=discord.File('./cogs/assets/temp_imgs/fight!.jpg'))
 
-        await ctx.send(do_fight[0])
-        await ctx.send(do_fight[1])
-
-
-
+        fight_winner(do_fight)
 
 
 def setup(client):
