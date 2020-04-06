@@ -67,5 +67,5 @@ def fight_winner(fighters):
     back_winner.paste(winner, (125, 125))  # Pastes the Avatar1 image onto top left side of BG
     back_winner.save('./cogs/assets/temp_imgs/back_winner.jpg')  # Saves new image
 
-    winner_BG = Image.open('./cogs/assets/img/back_winner.jpg')  # Opens saved new Background with assets
+    winner_BG = Image.open('./cogs/assets/temp_imgs/back_winner.jpg')  # Opens saved new Background with assets
     draw_winner = ImageDraw.Draw(winner_BG)  # Allows pillow to overlay text onto image.
