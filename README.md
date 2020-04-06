@@ -6,7 +6,7 @@
 - (more coming but won't be listed until implemented)
 
 ## Getting Started
-###Prerequisites
+### Prerequisites
 - Hosted Server
 - Discord Bot Token
 - Python 3.6.+
