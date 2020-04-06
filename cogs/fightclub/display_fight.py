@@ -58,6 +58,7 @@ def display_VS(fightersSetup):
     avatar_BG.save('./cogs/assets/temp_imgs/fight!.jpg')
 
 
+# noinspection DuplicatedCode
 def fight_winner(fighters):
     """Displays the winner of the fight !!"""
     winner = Image.open('./cogs/assets/temp_imgs/avatar1.png')  # currently the winner is at position Zero
@@ -67,5 +68,21 @@ def fight_winner(fighters):
     back_winner.paste(winner, (125, 125))  # Pastes the Avatar1 image onto top left side of BG
     back_winner.save('./cogs/assets/temp_imgs/back_winner.jpg')  # Saves new image
 
-    winner_BG = Image.open('./cogs/assets/img/back_winner.jpg')  # Opens saved new Background with assets
+    winner_BG = Image.open('./cogs/assets/temp_imgs/back_winner.jpg')  # Opens saved new Background with assets
     draw_winner = ImageDraw.Draw(winner_BG)  # Allows pillow to overlay text onto image.
+
+    #     (x,y)::↓ ↓ ↓(text)::↓ ↓ (r,g,b)::↓ ↓ ↓
+    draw_winner.text((500, 100), "{}{}".format(fighters[2].display_name, " is the Winner!"), (255, 255, 255),
+                     font=largeFont)  # Announce Winner
+    draw_winner.text((550, 200), "{}{}".format("He destroyed ", fighters[3].display_name), (255, 255, 255),
+                     font=font)  # Whom the winner destroyed
+
+    draw_winner.text((550, 300), "{}{}".format("Using their trusty ", fighters[0]), (255, 255, 255),
+                     font=font)  # Weapon Used by winner
+    draw_winner.text((550, 400), "{}{}{}{}".format(fighters[2].display_name, " made ", fighters[2].top_role, ' proud!'),
+                     (255, 255, 255),
+                     font=font)  # Shows the guild/role
+    draw_winner.text((550, 500), "{}".format('Earning $ BruizerBits'), (255, 255, 255,),
+                     font=font)  # draws the top role for Loser
+
+    winner_BG.save('./cogs/assets/temp_imgs/winner!.jpg')
