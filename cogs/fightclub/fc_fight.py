@@ -10,9 +10,9 @@ def fc_fight(fight_club_players):
     p2 = fight_club_players[1]
     p2_score = random.randint(0, 100)
 
-    # Return some combat messages
-    fcf_return_array.append(f'{p1.member_obj.display_name} has a {p1.weapon}.')
-    fcf_return_array.append(f'{p2.member_obj.display_name} has a {p2.weapon}.')
+    # Allocate weapons
+    fcf_return_array.append(f'{p1.weapon}')
+    fcf_return_array.append(f'{p2.weapon}')
 
     # add winners / losers to array
     if p1_score > p2_score:
