@@ -68,6 +68,8 @@ class FightClub(commands.Cog):
 
         fight_winner(do_fight)
 
+        await ctx.send(file=discord.File('./cogs/assets/temp_imgs/winner!.jpg'))
+
 
 def setup(client):
     client.add_cog(FightClub(client))
