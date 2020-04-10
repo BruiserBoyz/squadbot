@@ -4,7 +4,7 @@ from discord.ext import commands
 from .fightclub.fc_fight import fc_fight
 from .fightclub.display_fight import display_VS, fight_winner
 
-fight_club_players = []
+# fight_club_players = []
 weapon_selection = [
     "rusty broken knife",
     "ruddy gun",
@@ -35,6 +35,11 @@ class FCPlayer:
 class FightClub(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.fight_club_players = []
+
+    def set_fc_players(self, winner):
+        self.fight_club_players = []
+        self.fight_club_players.append(winner)
 
     # Add player to array
     @commands.command(aliases=['fcap'])
@@ -43,7 +48,7 @@ class FightClub(commands.Cog):
         obj = FCPlayer()
         obj.member_obj = user
         obj.set_weapon(weapon_selection[random.randint(0, 2)])
-        fight_club_players.append(obj)
+        self.fight_club_players.append(obj)
         # await ctx.send(f'{user.display_name} added.')
         await ctx.send(f'{user.mention} added.')
 
@@ -51,24 +56,26 @@ class FightClub(commands.Cog):
     @commands.command(aliases=['fclp'])
     async def _fc_list_players(self, ctx):
         """lists current players in fight club- fclp"""
-        players = fight_club_players
-        await ctx.send(f'Player {players}.')
+        players = self.fight_club_players
+        return_message = "Fighter(s): "
+        for player in players:
+            return_message += f'{player.member_obj.display_name}, '
+        await ctx.send(f'{return_message}.')
 
     @commands.command(aliases=['f!'])
     async def _fc_fight(self, ctx):
         """turns two players against each other - f!"""
         # Set rando weapons
-        for x in fight_club_players:
+        for x in self.fight_club_players:
             x.set_weapon((weapon_selection[random.randint(0, 2)]))
-        do_fight = fc_fight(fight_club_players)
+        do_fight = fc_fight(self.fight_club_players)
 
         display_VS(do_fight)
-
         await ctx.send(file=discord.File('./cogs/assets/temp_imgs/fight!.jpg'))
-
         fight_winner(do_fight)
-
         await ctx.send(file=discord.File('./cogs/assets/temp_imgs/winner!.jpg'))
+
+        self.set_fc_players(do_fight[4])
 
 
 def setup(client):

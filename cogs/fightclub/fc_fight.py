@@ -15,14 +15,18 @@ def fc_fight(fight_club_players):
     fcf_return_array.append(f'{p2.weapon}')
 
     # add winners / losers to array
+    # TODO instead of sending the px.member_obj - could jsut send the p1 / p2 objects in entirety.
     if p1_score > p2_score:
         winner = p1.member_obj
         loser = p2.member_obj
+        winner_obj = p1
     else:
         winner = p2.member_obj
         loser = p1.member_obj
+        winner_obj = p2
 
     fcf_return_array.append(winner)
     fcf_return_array.append(loser)
+    fcf_return_array.append(winner_obj)
     # Return the array
     return fcf_return_array
