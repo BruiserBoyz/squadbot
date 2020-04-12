@@ -19,7 +19,8 @@ print(ENV_LOAD_SUCCESS)
 # client = discord.Client()
 # channel = discord.Object(id=channel_id)
 
-client = commands.Bot(command_prefix=".bb", case_insensitive=True)
+# client = commands.Bot(command_prefix=".bb", case_insensitive=True)
+client = commands.Bot(command_prefix=".", case_insensitive=True)
 
 
 # displays an online message when bot is online.

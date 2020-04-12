@@ -1,10 +1,11 @@
 import random
 import discord
 from discord.ext import commands
-from .fightclub.fc_fight import fc_fight
-from .fightclub.display_fight import display_VS, fight_winner
 
-# fight_club_players = []
+from .fightclub.displayFight import displayFight
+from .fightclub.fc_fight import fc_fight
+
+fight_club_players = []
 weapon_selection = [
     "rusty broken knife",
     "ruddy gun",
@@ -36,6 +37,7 @@ class FightClub(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.fight_club_players = []
+        self.do_fight = []
 
     def set_fc_players(self, winner):
         self.fight_club_players = []
@@ -68,14 +70,13 @@ class FightClub(commands.Cog):
         # Set rando weapons
         for x in self.fight_club_players:
             x.set_weapon((weapon_selection[random.randint(0, 2)]))
-        do_fight = fc_fight(self.fight_club_players)
+        self.do_fight = fc_fight(self.fight_club_players)
 
-        display_VS(do_fight)
-        await ctx.send(file=discord.File('./cogs/assets/temp_imgs/fight!.jpg'))
-        fight_winner(do_fight)
-        await ctx.send(file=discord.File('./cogs/assets/temp_imgs/winner!.jpg'))
-
-        self.set_fc_players(do_fight[4])
+        vs_screen = displayFight.display_VS(self.do_fight)
+        await ctx.send(vs_screen)
+        winner = displayFight.fight_winner(self.do_fight)
+        await ctx.send(winner)
+        self.set_fc_players(self.do_fight[4])
 
 
 def setup(client):
