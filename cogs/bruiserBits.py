@@ -55,15 +55,26 @@ class BruiserBits(commands.Cog):
             # self.loop.run_until_complete(self.fc_est_dc())
             await conn.close()
 
-    # @commands.command(aliases=['qbal'])
-    # async def _qbal(self, ctx):
-    #     """Displays quick balance - qbal"""
-    #     for x in this_bank.get_all_accounts():
-    #         print(x.get_balance())
-    #     await ctx.send(x.get_balance())
+    @commands.command(aliases=['balance_member'])
+    async def _get_member_balance(self, ctx, *, user: discord.User):
+        '''Can only be used by bank owner / manager'''
+        auth_id = ctx.message.author.id
+        if auth_id != int(BANK_OWNER):
+            print("Not authorised.")
+            return
+        else:
+            print("Authorised.")
+            user_id = user.id
+            conn = await asyncpg.create_pool(**CREDS)
+            self.row = await conn.fetchrow(
+                'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', user_id
+            )
+            my_balance = self.row['balance']
+            await conn.close()
+            await ctx.send(f'{BB}{my_balance}')
 
-    @commands.command(aliases=['qbal'])
-    async def get_db(self, ctx):
+    @commands.command(aliases=['balance'])
+    async def get_own_balance(self, ctx):
         auth_id = ctx.message.author.id
         print("Authorised.")
         conn = await asyncpg.create_pool(**CREDS)
@@ -73,7 +84,6 @@ class BruiserBits(commands.Cog):
         my_balance = self.row['balance']
         await conn.close()
         await ctx.send(f'{BB}{my_balance}')
-
 
     @commands.command(aliases=['add_wallet'])
     async def do_db(self, ctx, *, user: discord.User):
@@ -103,7 +113,7 @@ class BruiserBits(commands.Cog):
         auth_id = ctx.message.author.id
         print(user_id, auth_id)
 
-    @commands.command(aliases=['add_money'])
+    @commands.command(aliases=['deposit'])
     async def _add_money(self, ctx, funds_to_add, *, user: discord.User):
         auth_id = ctx.message.author.id
         if auth_id != int(BANK_OWNER):
