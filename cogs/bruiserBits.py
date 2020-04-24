@@ -136,23 +136,26 @@ class BruiserBits(commands.Cog):
             'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', auth_id
         )
         my_balance = row['balance'] - float(funds_to_tfr)
-        await conn.execute('''
-                            UPDATE sb_wallet_3 set balance = $1
-                            WHERE d_user_id = $2
-                        ''', float(my_balance), auth_id)
+        if my_balance >= 0:
+            await conn.execute('''
+                                UPDATE sb_wallet_3 set balance = $1
+                                WHERE d_user_id = $2
+                            ''', float(my_balance), auth_id)
 
-        # Add the funds
-        row = await conn.fetchrow(
-            'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', user_id
-        )
-        my_balance = row['balance'] + float(funds_to_tfr)
-        await conn.execute('''
-                                    UPDATE sb_wallet_3 set balance = $1
-                                    WHERE d_user_id = $2
-                                ''', float(my_balance), user_id)
+            # Add the funds
+            row = await conn.fetchrow(
+                'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', user_id
+            )
+            my_balance = row['balance'] + float(funds_to_tfr)
+            await conn.execute('''
+                                        UPDATE sb_wallet_3 set balance = $1
+                                        WHERE d_user_id = $2
+                                    ''', float(my_balance), user_id)
 
-        await ctx.send(f'{BB}{funds_to_tfr} transfered to account')
-        await conn.close()
+            await ctx.send(f'{BB}{funds_to_tfr} transfered to account')
+            await conn.close()
+        else:
+            await ctx.send("Not enough money to do that homie...")
 
 
 def setup(client):
