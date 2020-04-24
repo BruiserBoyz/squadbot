@@ -33,7 +33,7 @@ class BruiserBits(commands.Cog):
     @commands.command(aliases=['est_db_toastcheeserabbit'])
     async def _fc_est_db(self, ctx):
         auth_id = ctx.message.author.id
-        if auth_id != BANK_OWNER:
+        if auth_id != int(BANK_OWNER):
             print("not authorised")
             return
         else:
