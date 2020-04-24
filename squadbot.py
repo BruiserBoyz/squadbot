@@ -19,7 +19,7 @@ print(ENV_LOAD_SUCCESS)
 # client = discord.Client()
 # channel = discord.Object(id=channel_id)
 
-client = commands.Bot(command_prefix=".bb", case_insensitive=True)
+client = commands.Bot(command_prefix=".", case_insensitive=True)
 
 
 # displays an online message when bot is online.
@@ -30,7 +30,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('-----')
-    await client.change_presence(activity=discord.Game(name="get better not bitter"))
+    await client.change_presence(activity=discord.Game(name="it's my first day"))
 
 
 # cog load commands

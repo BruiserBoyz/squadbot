@@ -4,22 +4,24 @@ import asyncio
 import asyncpg
 import datetime
 import discord
+import os
+from dotenv import load_dotenv
+load_dotenv('../../.env')
 
-# from .bruiser_bits.bb_accounts import MemberAccount
-# from .bruiser_bits.bb_bruiserbank import BruiserBank
+CREDS_P = os.getenv("CREDS_P")
+CREDS_U = os.getenv("CREDS_U")
+CREDS_H = os.getenv("CREDS_H")
+CREDS_D = os.getenv("CREDS_D")
+BANK_OWNER = os.getenv("BANK_OWNER")
+BB = os.getenv("BB")
 
-# this_bank = BruiserBank()
-#
-# # Create a new bank account for each new member.
-# this_bank.add_account(MemberAccount())
-SB_WALLET = "sb_wallet_1"
+SB_WALLET = "sb_wallet_3"
 CREDS = {
-            "user": "postgres",
-            "password": "cBUaCHS3ptvFyi",
-            "database": "squadbot_demo",
-            "host": "squadbot.ckkl1eknyjde.ap-southeast-2.rds.amazonaws.com"
+            "user": CREDS_U,
+            "password": CREDS_P,
+            "database": CREDS_D,
+            "host": CREDS_H
         }
-BB = '<:bb:702872380149727232> '
 
 
 class BruiserBits(commands.Cog):
@@ -30,23 +32,28 @@ class BruiserBits(commands.Cog):
     # Establish DB table(s).
     @commands.command(aliases=['est_db_toastcheeserabbit'])
     async def _fc_est_db(self, ctx):
-        """Setup tables if they don't exist"""
-        conn = await asyncpg.connect(**CREDS)
-        # Execute a statement to create a new table.
+        auth_id = ctx.message.author.id
+        if auth_id != BANK_OWNER:
+            print("not authorised")
+            return
+        else:
+            """Setup tables if they don't exist"""
+            conn = await asyncpg.connect(**CREDS)
+            # Execute a statement to create a new table.
 
-        # query = "INSERT INTO %s (col_1, col_2) VALUES (%%s, %%s)" % SB_WALLET
-        await conn.execute('''
-                CREATE TABLE sb_wallet_2(
-                    id serial PRIMARY KEY,
-                    d_user_id int UNIQUE,
-                    d_init_auth_id int,
-                    date_est date,
-                    balance double PRECISION
-                )
-            ''')
+            # query = "INSERT INTO %s (col_1, col_2) VALUES (%%s, %%s)" % SB_WALLET
+            await conn.execute('''
+                    CREATE TABLE sb_wallet_3(
+                        id serial PRIMARY KEY,
+                        d_user_id int UNIQUE,
+                        d_init_auth_id int,
+                        date_est date,
+                        balance double PRECISION
+                    )
+                ''')
 
-        # self.loop.run_until_complete(self.fc_est_dc())
-        await conn.close()
+            # self.loop.run_until_complete(self.fc_est_dc())
+            await conn.close()
 
     # @commands.command(aliases=['qbal'])
     # async def _qbal(self, ctx):
@@ -58,9 +65,10 @@ class BruiserBits(commands.Cog):
     @commands.command(aliases=['qbal'])
     async def get_db(self, ctx):
         auth_id = ctx.message.author.id
+        print("Authorised.")
         conn = await asyncpg.create_pool(**CREDS)
         self.row = await conn.fetchrow(
-            'SELECT balance FROM sb_wallet_2 WHERE d_user_id = $1', auth_id
+            'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', auth_id
         )
         my_balance = self.row['balance']
         await conn.close()
@@ -69,17 +77,22 @@ class BruiserBits(commands.Cog):
 
     @commands.command(aliases=['add_wallet'])
     async def do_db(self, ctx, *, user: discord.User):
-        # Setup the variables.
-        now_date = datetime.datetime.now()
-        user_id = user.id
         auth_id = ctx.message.author.id
-        conn = await asyncpg.create_pool(**CREDS)
-        # Execute.
-        await conn.execute('''
-                        INSERT INTO sb_wallet_2(d_user_id, d_init_auth_id, date_est, balance) VALUES($1, $2, $3, $4)
-                    ''', user_id, auth_id, datetime.date(now_date.year, now_date.month, now_date.day), 0.0)
-        await conn.close()
-        print("wallet added")
+        if auth_id != int(BANK_OWNER):
+            print("Not authorised.")
+            return
+        else:
+            # Setup the variables.
+            now_date = datetime.datetime.now()
+            user_id = user.id
+            auth_id = ctx.message.author.id
+            conn = await asyncpg.create_pool(**CREDS)
+            # Execute.
+            await conn.execute('''
+                            INSERT INTO sb_wallet_3(d_user_id, d_init_auth_id, date_est, balance) VALUES($1, $2, $3, $4)
+                        ''', user_id, auth_id, datetime.date(now_date.year, now_date.month, now_date.day), 0.0)
+            await conn.close()
+            print("wallet added")
 
     # Add player to array
     @commands.command(aliases=['check_user'])
@@ -91,26 +104,56 @@ class BruiserBits(commands.Cog):
         print(user_id, auth_id)
 
     @commands.command(aliases=['add_money'])
-    async def do_add_money(self, ctx, funds_to_add, user_nm):
+    async def _add_money(self, ctx, funds_to_add, *, user: discord.User):
+        auth_id = ctx.message.author.id
+        if auth_id != int(BANK_OWNER):
+            print(BANK_OWNER)
+            print("Not Authorised.")
+            return
+        else:
+            print("Authorised.")
+            conn = await asyncpg.create_pool(**CREDS)
+            user_id = user.id
+            row = await conn.fetchrow(
+                'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', user_id
+            )
+            my_balance = row['balance'] + float(funds_to_add)
+            await conn.execute('''
+                                UPDATE sb_wallet_3 set balance = $1
+                                WHERE d_user_id = $2
+                            ''', float(my_balance), user_id)
+            await ctx.send(f'{BB}{funds_to_add} added to account')
+            await conn.close()
+
+    @commands.command(aliases=['transfer'])
+    async def _transfer_money(self, ctx, funds_to_tfr, *, user: discord.User):
+        auth_id = ctx.message.author.id
         conn = await asyncpg.create_pool(**CREDS)
+        user_id = user.id
+
+        # Remove the funds
         row = await conn.fetchrow(
-            'SELECT bal FROM sb_wallet WHERE name = $1', user_nm
+            'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', auth_id
         )
-        my_balance = row['bal'] + float(funds_to_add)
+        my_balance = row['balance'] - float(funds_to_tfr)
         await conn.execute('''
-                            UPDATE sb_wallet set bal = $1
-                            WHERE name = $2
-                        ''', float(my_balance), user_nm)
-        await ctx.send(f'{BB}{funds_to_add} added to account')
+                            UPDATE sb_wallet_3 set balance = $1
+                            WHERE d_user_id = $2
+                        ''', float(my_balance), auth_id)
+
+        # Add the funds
+        row = await conn.fetchrow(
+            'SELECT balance FROM sb_wallet_3 WHERE d_user_id = $1', user_id
+        )
+        my_balance = row['balance'] + float(funds_to_tfr)
+        await conn.execute('''
+                                    UPDATE sb_wallet_3 set balance = $1
+                                    WHERE d_user_id = $2
+                                ''', float(my_balance), user_id)
+
+        await ctx.send(f'{BB}{funds_to_tfr} transfered to account')
         await conn.close()
 
 
 def setup(client):
     client.add_cog(BruiserBits(client))
-
-
-# Add triggers for deposits, withdrawals, transfers.
-# A deposit may be from posting content to news sections
-# Withdrawal maybe to get some credit on swag or to access custom emoji accessible via a specific role
-# or entry fee to fight club
-# A Transfer may be from losing a fight club.
