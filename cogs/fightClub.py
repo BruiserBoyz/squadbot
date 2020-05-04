@@ -2,7 +2,7 @@ import random
 import discord
 from discord.ext import commands
 
-from .fightclub.displayFight import displayFight
+from .fightclub.DisplayFight import DisplayFight
 from .fightclub.fc_fight import fc_fight
 
 fight_club_players = []
@@ -72,9 +72,10 @@ class FightClub(commands.Cog):
             x.set_weapon((weapon_selection[random.randint(0, 2)]))
         self.do_fight = fc_fight(self.fight_club_players)
 
-        vs_screen = displayFight.display_VS(self.do_fight)
-        await ctx.send(vs_screen)
-        winner = displayFight.fight_winner(self.do_fight)
+        display_fighters = DisplayFight(self.do_fight)
+        fighters = (display_fighters.display_vs())
+        winner = (display_fighters.fight_winner())
+        await ctx.send(fighters)
         await ctx.send(winner)
         self.set_fc_players(self.do_fight[4])
 
