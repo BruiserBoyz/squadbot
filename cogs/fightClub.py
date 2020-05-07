@@ -1,82 +1,57 @@
 import random
 import discord
 from discord.ext import commands
-from .fightclub.fc_fight import fc_fight
-from .fightclub.display_fight import display_VS, fight_winner
+from fightclub import fight_game
 
-# fight_club_players = []
-weapon_selection = [
-    "rusty broken knife",
-    "ruddy gun",
-    "broken bottle",
-]
-
-
-class FCPlayer:
-    def __init__(self):
-        self.member_obj = None
-        self.player_name = None
-        self.weapon = None
-        self.strength = 1
-        self.speed = 1
-        self.agility = 1
-        self.health = 1
-
-    def get_weapon(self):
-        return self.weapon
-
-    def set_weapon(self, new_weapon):
-        self.weapon = new_weapon
-
-    def get_health(self):
-        return self.health
-
-
-class FightClub(commands.Cog):
+# class FightClub(commands.Cog):
+class FightClub():
     def __init__(self, client):
         self.client = client
-        self.fight_club_players = []
+        self.fg = fight_game.FightGame()
 
-    def set_fc_players(self, winner):
-        self.fight_club_players = []
-        self.fight_club_players.append(winner)
+    def _add_fighter(self, fighter):
+        self.fg.set_fighter(fighter)
 
-    # Add player to array
-    @commands.command(aliases=['fcap'])
-    async def _fc_add_player(self, ctx, *, user: discord.Member):
-        """adds a player into fight club - fcap"""
-        obj = FCPlayer()
-        obj.member_obj = user
-        obj.set_weapon(weapon_selection[random.randint(0, 2)])
-        self.fight_club_players.append(obj)
-        # await ctx.send(f'{user.display_name} added.')
-        await ctx.send(f'{user.mention} added.')
+    def _print_fighters(self):
+        fighters = self.fg.get_all_fighters()
+        for fighter in fighters:
+            print(f'{fighter}')
 
-    # List players.
-    @commands.command(aliases=['fclp'])
-    async def _fc_list_players(self, ctx):
-        """lists current players in fight club- fclp"""
-        players = self.fight_club_players
-        return_message = "Fighter(s): "
-        for player in players:
-            return_message += f'{player.member_obj.display_name}, '
-        await ctx.send(f'{return_message}.')
+    # @commands.command(aliases=['challenge'])
+    # async def _fc_add_player(self, ctx, *, user: discord.Member):
+    #     # await ctx.send(f'{user.display_name} added.')
+    #     await ctx.send(f'henlo.')
 
-    @commands.command(aliases=['f!'])
-    async def _fc_fight(self, ctx):
-        """turns two players against each other - f!"""
-        # Set rando weapons
-        for x in self.fight_club_players:
-            x.set_weapon((weapon_selection[random.randint(0, 2)]))
-        do_fight = fc_fight(self.fight_club_players)
+#     @commands.command(aliases=['fight'])
+#     async def _fc_fight(self, ctx, *, user: discord.Member):
+#         self.fg.set_fighter(ctx.message.author.id)
+#         self.fg.set_fighter(user.mention)
+#         for x in self.fg.get_all_fighters():
+#             print(x)
+#
+#         await ctx.send(f'ok - we got a fight on our hands now!')
+#
+#
+# def setup(client):
+#     client.add_cog(FightClub(client))
 
-        display_VS(do_fight)
-        await ctx.send(file=discord.File('./cogs/assets/temp_imgs/fight!.jpg'))
-        fight_winner(do_fight)
-        await ctx.send(file=discord.File('./cogs/assets/temp_imgs/winner!.jpg'))
+game_on = True
+game = FightClub("clientio")
+while game_on:
+    cmd = input("command: ")
+    try:
+        cmd_attr = cmd.split(" ")[1]
+    except:
+        cmd_attr = False
 
-        self.set_fc_players(do_fight[4])
-
-
-def setup(client):
-    client.add_cog(FightClub(client))
+    if '.challenge' in cmd:
+        game._add_fighter(cmd_attr)
+    elif '.show' in cmd:
+        game._print_fighters()
+    elif '.setPrize' in cmd:
+        game.fg.set_fight_prize(int(cmd_attr))
+        print(f'prize set at {game.fg.get_fight_prize()}')
+    elif 'exit' in cmd:
+        print(f'later {game.client}')
+        game_on = False;
+        exit()
