@@ -1,10 +1,18 @@
 class Fighter:
     def __init__(self):
-        self.strength = 0.0
-        self.stamina = 0.0
-        self.agility = 0.0
+        self.health = 50.0
+        self.strength = 50.0
+        self.stamina = 50.0
+        self.agility = 50.0
         self.player = ""
         self.weapon = ""
+
+    def set_health(self, health_change):
+        self.health += health_change
+        return True
+
+    def get_health(self):
+        return self.health
 
     def set_strength(self, strength_change):
         self.strength += strength_change

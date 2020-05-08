@@ -1,57 +1,63 @@
 import random
 import discord
 from discord.ext import commands
-from fightclub import fight_game
+from .fightclub.fight_game import FightGame
+from .fightclub.fighter import Fighter
 
-# class FightClub(commands.Cog):
-class FightClub():
+class FightClub(commands.Cog):
+# class FightClub():
     def __init__(self, client):
         self.client = client
-        self.fg = fight_game.FightGame()
+        self.fg = FightGame()
 
-    def _add_fighter(self, fighter):
-        self.fg.set_fighter(fighter)
+    @commands.command(aliases=['challenge'])
+    async def _challenge(self, ctx, *, fighter):
+        # Invoke new fighter and set the attributes.
+        new_fighter = Fighter()
+        # TODO replace this with the member object, or some way to link to member.
+        new_fighter.set_player(fighter)
+        self.fg.set_fighter(new_fighter)
+        # Increase number of fighters - remember to decrease when we drop a fighter.
+        self.fg.set_num_fighters(1)
 
-    def _print_fighters(self):
+        # get some fighter information (demo)
+        new_fighter = self.fg.get_fighter(self.fg.get_num_fighters()-1)
+        player_name = new_fighter.get_player()
+        # await ctx.send(player_name)
+
+    @commands.command(aliases=['printF'])
+    async def _print_fighters(self, ctx):
         fighters = self.fg.get_all_fighters()
+        prt_fighter = ""
         for fighter in fighters:
-            print(f'{fighter}')
+            prt_fighter += f'{fighter}\n'
+        await ctx.send(prt_fighter)
 
-    # @commands.command(aliases=['challenge'])
-    # async def _fc_add_player(self, ctx, *, user: discord.Member):
-    #     # await ctx.send(f'{user.display_name} added.')
-    #     await ctx.send(f'henlo.')
+    @commands.command(aliases=['weapon'])
+    async def _set_weapon(self, ctx, weapon, *, fighter):
+        """Sets a new weapon for a single fighter"""
+        weapon_set = self.fg.set_fighter_weapon(weapon, fighter)
+        if weapon_set:
+            await ctx.send(f'{fighter} was found and {weapon} was set')
+        else:
+            await ctx.send('Problem setting the weapon.')
 
-#     @commands.command(aliases=['fight'])
-#     async def _fc_fight(self, ctx, *, user: discord.Member):
-#         self.fg.set_fighter(ctx.message.author.id)
-#         self.fg.set_fighter(user.mention)
-#         for x in self.fg.get_all_fighters():
-#             print(x)
-#
-#         await ctx.send(f'ok - we got a fight on our hands now!')
-#
-#
-# def setup(client):
-#     client.add_cog(FightClub(client))
+    @commands.command(aliases=['setWeaponAll'])
+    async def _set_weapon_all(self, ctx, weapon):
+        """Gives the same weapon to all fighters"""
+        weapon_set = self.fg.set_all_weapons(weapon)
+        if weapon_set:
+            await ctx.send(f'All fighters now have a {weapon}.')
+        else:
+            await ctx.send('Problem setting the weapons for some or all fighters.')
 
-game_on = True
-game = FightClub("clientio")
-while game_on:
-    cmd = input("command: ")
-    try:
-        cmd_attr = cmd.split(" ")[1]
-    except:
-        cmd_attr = False
+    @commands.command(aliases=['f2'])
+    async def _fight_two(self, ctx):
+        """Takes the first two fighters, and brawls them."""
+        round = 1
+        while round < 4:
+            await ctx.send(self.fg.fight_two())
+            round += 1
 
-    if '.challenge' in cmd:
-        game._add_fighter(cmd_attr)
-    elif '.show' in cmd:
-        game._print_fighters()
-    elif '.setPrize' in cmd:
-        game.fg.set_fight_prize(int(cmd_attr))
-        print(f'prize set at {game.fg.get_fight_prize()}')
-    elif 'exit' in cmd:
-        print(f'later {game.client}')
-        game_on = False;
-        exit()
+def setup(client):
+    client.add_cog(FightClub(client))
