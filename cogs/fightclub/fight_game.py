@@ -6,6 +6,10 @@ class FightGame:
         self.current_champ = ""
         self.fightprize = 500
 
+    def drop_all_fighters(self):
+        self.fighters = []
+        self.number_fighters = 0
+
     def set_num_fighters(self, increment):
         self.number_fighters += increment
         return True
@@ -81,6 +85,7 @@ class FightGame:
                     deathed_out +=1
 
                 if stammed_out >= 1 or deathed_out >=1:
+                    rtn_msg += "game over man"
                     return rtn_msg
 
             # otherwise let's have a fight.
@@ -109,5 +114,7 @@ class FightGame:
                 rtn_msg += f'they are somehow still alive'
             else:
                 rtn_msg += f'they are quite dead.\n'
+                # remove loser from database so next fight can progress.
+                # Add winner stats and glories.
 
             return rtn_msg
